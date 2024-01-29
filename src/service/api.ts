@@ -1,12 +1,9 @@
 import axios from 'axios'
 
-const apiURL = "https://api.meteomatics.com/"
+const apiURL = "http://localhost:3002/"
 
 const api = axios.create({
-    baseURL: apiURL,
-    headers: {
-        'Authorization': 'Basic dGhlZGV2c192aWVpcmFfZ3VpbGhlcm1lOm45cUI4d1FYMjA='
-    }
+    baseURL: apiURL
 })
 
 export default api

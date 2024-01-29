@@ -18,9 +18,9 @@ export default function Home() {
   })
 
   const submitForm = async (data: any) => {
-    const result = await cityService.getWeather();
+    const result = await cityService.getWeather(data.city);
 
-    console.log(result.data[0].coordinates[0].dates)
+    console.log('result', result)
   }
 
   return (
