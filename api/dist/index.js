@@ -85,6 +85,66 @@ app.get('/geocode', (req, res) => {
         res.status(500).json({ error: 'Erro ao obter dados de geocoding' });
     });
 });
+/**
+ * @swagger
+ * tags:
+ *   - name: Weather
+ *     description: Captura a temperatura das horas do dia
+ */
+/**
+ * @swagger
+ * /weather:
+ *   get:
+ *     summary: Obter temperatura de uma coordenada
+ *     tags:
+ *       - Weather
+ *     parameters:
+ *       - in: query
+ *         name: latitude
+ *         required: true
+ *         description: Valor da Latitude
+ *         schema:
+ *           type: string
+ *       - in: query
+ *         name: longitude
+ *         required: true
+ *         description: Valor da Longitude
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Temperatura de latitude e longitude
+ *         content:
+ *           application/json:
+ *             example: { "latitude": 37.4224764, "longitude": -122.0842499 }
+ *       400:
+ *         description: Erro ao processar a solicitação
+ *         content:
+ *           application/json:
+ *             example: { "error": "Endereço não fornecido" }
+ */
+app.get('/weather', (req, res) => {
+    const coordinates = req.query;
+    if (!coordinates) {
+        return res.status(400).json({ error: 'Cordenadas não encontrada' });
+    }
+    const apiUrl = `https://api.meteomatics.com/2024-01-29T00:00:00ZP1D:PT1H/t_2m:C/${coordinates.latitude},${coordinates.longitude}/json`;
+    let config = {
+        method: 'get',
+        url: apiUrl,
+        headers: {
+            'Authorization': 'Basic dGhlZGV2c192aWVpcmFfZ3VpbGhlcm1lOm45cUI4d1FYMjA='
+        }
+    };
+    axios_1.default.request(config)
+        .then(response => {
+        res.status(200).json(response.data.data[0].coordinates[0].dates);
+    })
+        .catch(error => {
+        console.log(error.message);
+        res.status(500).json({ error: 'Erro ao obter dados de geocoding' });
+    });
+});
 app.listen(port, () => {
     console.log(`Servidor rodando em http://localhost:${port}`);
 });

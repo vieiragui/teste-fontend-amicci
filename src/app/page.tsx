@@ -1,6 +1,6 @@
 'use client'
 
-import { cityService } from "@/service/city";
+import { cityService } from "@/service/city-service";
 import { Button, TextField } from "@mui/material";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -18,7 +18,7 @@ export default function Home() {
   })
 
   const submitForm = async (data: any) => {
-    const result = await cityService.getWeather(data.city);
+    const result = await cityService.getCoordinates(data.city);
 
     console.log('result', result)
   }
