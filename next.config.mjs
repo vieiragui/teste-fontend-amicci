@@ -5,7 +5,7 @@ const nextConfig = {
    *
    * @see https://nextjs.org/docs/app/building-your-application/deploying/static-exports
    */
-  output: 'out', // Especifique o diretório de saída desejado
+  output: 'export', // Especifique o diretório de saída desejado
 
   /**
    * Set base path. This is the slug of your GitHub repository.
