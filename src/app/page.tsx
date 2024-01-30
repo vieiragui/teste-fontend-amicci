@@ -1,7 +1,7 @@
 'use client'
 
 import { cityService } from "@/service/city-service";
-import { Button, TextField, Typography } from "@mui/material";
+import { Alert, Button, TextField, Typography } from "@mui/material";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -23,6 +23,7 @@ export default function Home() {
   const [weathers, setWeathers] = useState<any>([])
   const [coordinatesCurrent, setCoordinatesCurrent] = useState<Coordinates>()
   const [isSearching, setIsSearching] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const fadeIn = useSpring({
     opacity: isSearching ? 1 : 0,
@@ -30,10 +31,14 @@ export default function Home() {
   });
 
   const submitForm = async (data: any) => {
-    const coordinates = await cityService.getCoordinates(data.city);
-    const weather = await weatherService.getWeather(coordinates);
-
-    setWeathers(weather)
+    try {
+      const coordinates = await cityService.getCoordinates(data.city);
+      const weather = await weatherService.getWeather(coordinates);
+      setWeathers(weather);
+      setError(null);
+    } catch (error) {
+      setError('Erro ao buscar coordenadas');
+    }
   }
 
   const onSucess = (position: any) => {
@@ -45,7 +50,7 @@ export default function Home() {
   }
 
   const onError = () => {
-    console.log('error')
+    setError('Erro ao obter localização');
   }
 
   const currentWeather = async () => {
@@ -53,6 +58,7 @@ export default function Home() {
     const weather = await weatherService.getWeather(coordinatesCurrent as Coordinates);
 
     setWeathers(weather)
+    setError(null);
   }
 
   useEffect(() => {
@@ -63,6 +69,11 @@ export default function Home() {
   return (
     <div className="flex items-center justify-center h-screen bg-gray-100">
       <div className="flex flex-col items-center w-full">
+        {error && (
+          <Alert severity="error" className="absolute top-0 left-0 right-0 z-50">
+            {error}
+          </Alert>
+        )}
         <form className="md:max-w-2xl w-full p-4 bg-white shadow-md rounded-md" onSubmit={handleSubmit(submitForm)}>
           <div className="relative mb-4">
 
@@ -86,7 +97,7 @@ export default function Home() {
 
             <animated.div style={fadeIn} className="mt-4">
               <Typography variant="h6" component="div" color="textPrimary">
-                Clima Atual: {weathers}
+                Clima Atual: {weathers} ºC
               </Typography>
             </animated.div>
           </div>
